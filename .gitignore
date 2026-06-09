@@ -1,0 +1,6 @@
+.env
+.venv/
+*.duckdb
+*.duckdb.wal
+node_modules/
+.DS_Store

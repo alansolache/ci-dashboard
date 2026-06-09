@@ -1,0 +1,127 @@
+/* =============================================================
+   Stori — DeLorean Design System
+   Source of truth for color, type, space, radius, shadow tokens.
+   ============================================================= */
+
+/* Inter (Google Fonts) — the only active type family. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* ------- Brand ------- */
+  --stori-green:        #00D180;   /* logo, primary action */
+  --stori-green-active: #058E65;   /* pressed / on-light contrast / links */
+  --stori-teal:         #003A40;   /* dark-plate background */
+  --stori-teal-deep:    #002C30;   /* darker variant, typographic on mint */
+
+  /* ------- Mint tints ------- */
+  --mint-50:  #F0FCF7;
+  --mint-100: #E5FAF2;   /* hero gradient top, initials chip */
+  --mint-200: #B3F2D9;   /* success chip, usage-example panel */
+  --mint-300: #99EDCC;   /* deeper mint */
+
+  /* ------- Neutrals (ink ramp) ------- */
+  --ink:        #161616;   /* default text */
+  --ink-92:     #121515;   /* near-black */
+  --ink-77:     #393939;   /* initials text */
+  --ink-55:     #6F6F6F;   /* muted text */
+  --ink-47:     #777777;   /* secondary text */
+  --ink-30:     #B4B4B4;   /* disabled text */
+  --ink-25:     #C6C6C6;   /* borders */
+  --ink-15:     #DDDDDD;
+  --ink-12:     #E0E0E0;   /* hairlines */
+  --ink-10:     #F4F4F4;   /* secondary surface */
+  --ink-08:     #A8A8A8;   /* outline on imagery */
+  --ink-000:    #FFFFFF;
+
+  /* ------- Semantic ------- */
+  --warning-bg:     #FFF3D9;
+  --warning-fg:     #161616;
+  --error-bg:       #FFE0E0;
+  --error-accent:   #FF6666;
+  --info-bg:        #9DDCFF;
+  --success-bg:     #B3F2D9;
+  --success-fg:     #002C30;
+  --success-dark:   #058E65;
+
+  /* ------- Type ------- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-mono: ui-monospace, 'SF Mono', 'Menlo', Consolas, monospace;
+
+  /* type scale — token names match Figma usage in the source */
+  --t-display-1:  700 96px/1.00   var(--font-sans);   /* "Welcome to DeLorean" */
+  --t-display-2:  800 96px/1.00   var(--font-sans);   /* hero in sandbox title */
+  --t-h1:         700 48px/1.00   var(--font-sans);   /* page title */
+  --t-h2:         700 40px/1.30   var(--font-sans);   /* section title */
+  --t-h3:         700 32px/1.25   var(--font-sans);   /* subsection */
+  --t-h4:         700 24px/1.20   var(--font-sans);   /* card heading */
+  --t-lead:       400 24px/1.58   var(--font-sans);   /* 38px leading */
+  --t-body-lg:    400 20px/1.40   var(--font-sans);
+  --t-body:       400 16px/1.50   var(--font-sans);
+  --t-body-b:     700 16px/1.50   var(--font-sans);
+  --t-small:      400 14px/1.42   var(--font-sans);
+  --t-btn:        700 14px/1.42   var(--font-sans);   /* button label */
+  --t-caption:    400 12px/1.33   var(--font-sans);
+  --t-initials:   700 16px/1.375  var(--font-sans);   /* avatar chip */
+
+  /* ------- Space (8-pt) ------- */
+  --space-0: 0;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-9: 56px;
+  --space-10: 64px;
+  --space-11: 80px;
+  --space-12: 96px;
+  --space-13: 112px;
+
+  /* ------- Radii ------- */
+  --radius-sm: 4px;
+  --radius-md: 12px;    /* buttons, inputs, list rows */
+  --radius-lg: 24px;    /* cards */
+  --radius-xl: 40px;    /* phone frames */
+  --radius-pill: 9999px;
+
+  /* ------- Shadows ------- */
+  --shadow-1: 0 4px 12px rgba(0, 21, 64, 0.05);
+  --shadow-2: 0 8px 24px rgba(0, 21, 64, 0.14);
+  --shadow-pop: 0 2px 4px rgba(0, 0, 0, 0.04);
+
+  /* ------- Motion ------- */
+  --motion-fast: 120ms;
+  --motion: 200ms;
+  --motion-slow: 320ms;
+  --ease: cubic-bezier(0.2, 0.6, 0.2, 1);
+
+  /* ------- Z ------- */
+  --z-sheet: 20;
+  --z-modal: 40;
+  --z-toast: 60;
+}
+
+/* ============== Semantic aliases (h1, p, code…) ============== */
+
+html, body {
+  font: var(--t-body);
+  color: var(--ink);
+  background: var(--ink-000);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1 { font: var(--t-h1); color: var(--ink); margin: 0; letter-spacing: -0.01em; }
+h2 { font: var(--t-h2); color: var(--ink); margin: 0; letter-spacing: -0.005em; }
+h3 { font: var(--t-h3); color: var(--ink); margin: 0; }
+h4 { font: var(--t-h4); color: var(--ink); margin: 0; }
+p  { font: var(--t-body); color: var(--ink); margin: 0; }
+small { font: var(--t-caption); color: var(--ink-55); }
+code { font-family: var(--font-mono); font-size: 0.875em; background: var(--ink-10); padding: 2px 6px; border-radius: 4px; }
+a { color: var(--stori-green-active); text-decoration: none; font-weight: 700; }
+a:hover { text-decoration: underline; }
+
+/* hairline utility */
+.stori-hairline { border-top: 1px solid var(--ink-12); }
