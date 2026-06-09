@@ -1,4 +1,4 @@
-# CI-AGENT / CI Dashboard
+# CI Dashboard
 
 Public static dashboard for competitive-intelligence metrics built from CNBV regulatory files, Banxico FX, and generated JSON/JS artifacts.
 
@@ -8,7 +8,7 @@ Target host: Cloudflare Pages.
 
 Suggested Cloudflare Pages settings:
 
-- Project name: `ci-agent-ci-dashboard`
+- Project name: `ci-dashboard`
 - Production branch: `main`
 - Framework preset: `None`
 - Build command: leave blank
