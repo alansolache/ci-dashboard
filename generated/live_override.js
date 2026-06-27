@@ -6,5 +6,6 @@
   window.CI.METRICS = d.metrics;
   window.CI.ARPOC = d.series.arpoc;
   window.CI.GROSS_PROFIT = d.series.gross_profit;
+  window.CI.METRIC_SERIES = d.metric_series;
   window.CI.REFRESH_STATUS = d.metadata;
 })();

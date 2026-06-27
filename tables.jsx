@@ -9,9 +9,11 @@ function fmtMetric(v, fmt) {
   switch (fmt) {
     case 'money': return '$' + v;
     case 'money_m': return '$' + v.toLocaleString() + 'm';
-    case 'money_signed': return v < 0 ? '$(' + Math.abs(v) + ')M' : '$' + v + 'M';
+    case 'money_signed': return v < 0 ? '$(' + Math.abs(v).toLocaleString() + ')M' : '$' + v.toLocaleString() + 'M';
     case 'pct1': return v.toFixed(1) + '%';
     case 'pct0': return v + '%';
+    case 'num1': return v.toLocaleString(undefined, { maximumFractionDigits: 1 });
+    case 'num2': return v.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     default: return '' + v;
   }
 }
@@ -130,6 +132,86 @@ function CheckIcon({ ok }) {
   );
 }
 
+
+function ProductValue({ value, rowType }) {
+  if (rowType === 'text') return <span className="product-text">{value}</span>;
+  if (value === null || value === undefined) return <span className="na">n.a.</span>;
+  if (value === 1 || value === true) return <CheckIcon ok={true} />;
+  if (value === 0 || value === false || value === 'No') return <CheckIcon ok={false} />;
+  return <span className="product-text">{value}</span>;
+}
+
+function ProductMatrixTable({ cols, rows, compact=false }) {
+  const [hoverRow, setHoverRow] = _useStateT(null);
+  return (
+    <div className="tbl-wrap">
+      <table className={'ci-table deposit-table product-matrix-table' + (compact ? ' compact' : '')}>
+        <thead>
+          <tr>
+            <th className="rowhead-th"></th>
+            {cols.map((c) => <th key={c.key} className={c.stori ? 'col-stori-head' : ''}>{c.name}</th>)}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, ri) => (
+            <tr key={ri} className={hoverRow === ri ? 'row-hover' : ''}
+              onMouseEnter={() => setHoverRow(ri)} onMouseLeave={() => setHoverRow(null)}>
+              <td className="rowhead rowhead-plain">{row.label}</td>
+              {row.vals.map((v, ci) => (
+                <td key={ci} className={cols[ci].stori ? 'col-stori' : ''}>
+                  <ProductValue value={v} rowType={row.type} />
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function DebtFinancingTable({ rows, peers }) {
+  const groups = [];
+  rows.forEach((r) => {
+    const last = groups[groups.length - 1];
+    if (last && last.company === r.company) last.items.push(r);
+    else groups.push({ company: r.company, items: [r] });
+  });
+  const peerKey = (name) => ({ Klar: 'klar', Plata: 'plata', Uala: 'uala', Ualá: 'uala', Stori: 'stori', Nu: 'nu' }[name]);
+  return (
+    <div className="tbl-wrap">
+      <table className="ci-table funding-table debt-table">
+        <thead>
+          <tr>
+            <th>Debt Type</th><th>Date</th><th>Amount Raised</th><th>Lead Investor</th><th>Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {groups.map((g, gi) => (
+            <React.Fragment key={gi}>
+              <tr className="group-row"><td colSpan={5}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8 }}>
+                  <span style={{ width: 10, height: 10, borderRadius: 10, background: peers[peerKey(g.company)] ? peers[peerKey(g.company)].color : 'var(--stori-green-active)' }} />
+                  {g.company}
+                </span>
+              </td></tr>
+              {g.items.map((it, ii) => (
+                <tr key={ii} className="fund-row">
+                  <td className="fund-round"><strong>{it.debtType}</strong></td>
+                  <td className="ml">{it.date}</td>
+                  <td className="ml mono">{it.amount}</td>
+                  <td className="ml">{it.lead}</td>
+                  <td className="ml notes">{it.notes}</td>
+                </tr>
+              ))}
+            </React.Fragment>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 /* ============================ DEPOSIT TABLE =============================== */
 function DepositTable({ cols, rows, theme }) {
   const [hoverRow, setHoverRow] = _useStateT(null);
@@ -215,4 +297,4 @@ function FundingTable({ rows, peers }) {
   );
 }
 
-Object.assign(window, { MetricsTable, DepositTable, FundingTable, fmtMetric });
+Object.assign(window, { MetricsTable, DepositTable, ProductMatrixTable, FundingTable, DebtFinancingTable, fmtMetric });

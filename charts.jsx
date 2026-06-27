@@ -47,11 +47,12 @@ function fmtVal(v, kind) {
   if (kind === 'money') return '$' + v;
   if (kind === 'money_m') return '$' + v.toLocaleString() + 'm';
   if (kind === 'pct') return v + '%';
+  if (kind === 'num2') return (Math.round(v * 100) / 100).toFixed(2);
   return (Math.round(v * 10) / 10).toFixed(1);
 }
 
 /* ============================ LINE CHART ================================== */
-function LineChart({ data, peers, labels, visible, showLabels, theme }) {
+function LineChart({ data, peers, labels, visible, showLabels, theme, fmt = 'num1' }) {
   const [ref, W] = useMeasure();
   const [hover, setHover] = _useState(null); // index
   const H = 460;
@@ -113,7 +114,7 @@ function LineChart({ data, peers, labels, visible, showLabels, theme }) {
         .sort((a, b) => y(a.v) - y(b.v));
       stack.forEach((o) => {
         const col = peers[o.k].color;
-        const tx = fmtVal(o.v, 'num');
+        const tx = fmtVal(o.v, fmt);
         const w = tx.length * 7.4 + 12, h = 19;
         const px = Math.min(Math.max(x(i) - w / 2, padL), W - padR - w);
         const py = y(o.v) - 24;
@@ -149,7 +150,7 @@ function LineChart({ data, peers, labels, visible, showLabels, theme }) {
       rows.map((o) => React.createElement('div', { key: o.k, style: { display: 'flex', alignItems: 'center', gap: 8, padding: '2px 0' } },
         React.createElement('span', { style: { width: 9, height: 9, borderRadius: 9, background: peers[o.k].color, flex: '0 0 auto' } }),
         React.createElement('span', { style: { font: '600 13px Inter', color: theme === 'dark' ? '#fff' : 'var(--ink)', flex: 1 } }, peers[o.k].name),
-        React.createElement('span', { style: { font: '700 13px Inter', color: theme === 'dark' ? '#fff' : 'var(--ink)' } }, fmtVal(o.v, 'money'))))
+        React.createElement('span', { style: { font: '700 13px Inter', color: theme === 'dark' ? '#fff' : 'var(--ink)' } }, fmtVal(o.v, fmt))))
     );
   }
 
@@ -160,7 +161,7 @@ function LineChart({ data, peers, labels, visible, showLabels, theme }) {
 }
 
 /* ============================ COLUMN CHART ================================ */
-function ColumnChart({ data, peers, labels, visible, showLabels, theme }) {
+function ColumnChart({ data, peers, labels, visible, showLabels, theme, fmt = 'num1' }) {
   const [ref, W] = useMeasure();
   const [hover, setHover] = _useState(null);
   const H = 460;
@@ -208,8 +209,8 @@ function ColumnChart({ data, peers, labels, visible, showLabels, theme }) {
       const col = peers[k].color;
       els.push(React.createElement('rect', { key: 'b' + k + i, x: bx, y: top, width: barW, height: Math.max(h, 0.5), rx: 2.5,
         fill: col, opacity: hover === null || hover === i ? 1 : 0.35 }));
-      if (showLabels && keys.length <= 3) {
-        const tx = (Math.round(v * 10) / 10).toFixed(1);
+      if (showLabels) {
+        const tx = fmtVal(v, fmt);
         els.push(React.createElement('text', { key: 'bl' + k + i, x: bx + barW / 2, y: v >= 0 ? top - 5 : top + h + 13,
           textAnchor: 'middle', fontSize: 11, fontWeight: 700, fill: col, opacity: hover === null || hover === i ? 1 : 0.35 }, tx));
       }
@@ -231,7 +232,7 @@ function ColumnChart({ data, peers, labels, visible, showLabels, theme }) {
       rows.map((o) => React.createElement('div', { key: o.k, style: { display: 'flex', alignItems: 'center', gap: 8, padding: '2px 0' } },
         React.createElement('span', { style: { width: 9, height: 9, borderRadius: 2, background: peers[o.k].color } }),
         React.createElement('span', { style: { font: '600 13px Inter', color: theme === 'dark' ? '#fff' : 'var(--ink)', flex: 1 } }, peers[o.k].name),
-        React.createElement('span', { style: { font: '700 13px Inter', color: theme === 'dark' ? '#fff' : 'var(--ink)' } }, (Math.round(o.v * 10) / 10).toFixed(1))))
+        React.createElement('span', { style: { font: '700 13px Inter', color: theme === 'dark' ? '#fff' : 'var(--ink)' } }, fmtVal(o.v, fmt))))
     );
   }
 
@@ -267,8 +268,9 @@ function StackedColumnChart({ data, theme }) {
     let acc = 0;
     data.layers.forEach((l) => {
       const v = l.vals[i]; const top = y(acc + v); const h = y(acc) - y(acc + v); acc += v;
+      const layerColor = theme === 'dark' && l.darkColor ? l.darkColor : l.color;
       els.push(React.createElement('rect', { key: 'b' + l.key + i, x: cx - barW / 2, y: top, width: barW, height: Math.max(h, 0),
-        fill: l.color, opacity: hover === null || hover === i ? 1 : 0.4,
+        fill: layerColor, opacity: hover === null || hover === i ? 1 : 0.4,
         onMouseEnter: () => setHover(i), onMouseLeave: () => setHover(null) }));
     });
     els.push(React.createElement('text', { key: 'tot' + i, x: cx, y: y(totals[i]) - 8, textAnchor: 'middle', fontSize: 13, fontWeight: 800,
@@ -282,10 +284,13 @@ function StackedColumnChart({ data, theme }) {
       background: theme === 'dark' ? '#0b2b2f' : '#fff', border: '1px solid ' + (theme === 'dark' ? 'rgba(255,255,255,.16)' : 'var(--ink-12)'),
       borderRadius: 12, boxShadow: 'var(--shadow-2)', padding: '10px 14px', minWidth: 150, pointerEvents: 'none' } },
       React.createElement('div', { style: { font: '700 12px Inter', color: theme === 'dark' ? 'rgba(255,255,255,.6)' : 'var(--ink-47)', marginBottom: 6 } }, data.years[hover]),
-      data.layers.map((l) => React.createElement('div', { key: l.key, style: { display: 'flex', alignItems: 'center', gap: 8, padding: '2px 0' } },
-        React.createElement('span', { style: { width: 9, height: 9, borderRadius: 2, background: l.color } }),
+      data.layers.map((l) => {
+        const layerColor = theme === 'dark' && l.darkColor ? l.darkColor : l.color;
+        return React.createElement('div', { key: l.key, style: { display: 'flex', alignItems: 'center', gap: 8, padding: '2px 0' } },
+        React.createElement('span', { style: { width: 9, height: 9, borderRadius: 2, background: layerColor } }),
         React.createElement('span', { style: { font: '600 13px Inter', color: theme === 'dark' ? '#fff' : 'var(--ink)', flex: 1 } }, l.label),
-        React.createElement('span', { style: { font: '700 13px Inter', color: theme === 'dark' ? '#fff' : 'var(--ink)' } }, '$' + l.vals[hover] + 'm')))
+        React.createElement('span', { style: { font: '700 13px Inter', color: theme === 'dark' ? '#fff' : 'var(--ink)' } }, '$' + l.vals[hover] + 'm'));
+      })
     );
   }
   return React.createElement('div', { ref, style: { position: 'relative', width: '100%' } },

@@ -3,7 +3,11 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>CI Dashboard</title>
+<title>Stori · Competitive Intelligence</title>
+<link rel="icon" href="assets/favicon.ico?v=20260624-sticker" sizes="any" />
+<link rel="shortcut icon" href="assets/favicon.ico?v=20260624-sticker" sizes="any" />
+<link rel="icon" type="image/png" href="assets/favicon.png?v=20260624-sticker" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png?v=20260624-sticker" />
 <link rel="stylesheet" href="assets/colors_and_type.css" />
 <style>
 /* ===================== THEME TOKENS ===================== */
@@ -57,6 +61,9 @@ body { background:var(--app-bg); font-family:var(--font-sans); color:var(--app-t
 :root[data-theme="dark"] .topbar-title h1 { color:#fff; }
 .period-pill { font:700 12px/1 var(--font-sans); color:var(--stori-green-active); background:var(--app-rail-active-bg);
   padding:6px 11px; border-radius:9999px; }
+.period-select { display:inline-flex; align-items:center; gap:7px; font:700 12px/1 var(--font-sans); color:var(--app-text-soft); }
+.period-select select { font:700 12px/1 var(--font-sans); color:var(--app-text); background:var(--app-panel);
+  border:1px solid var(--app-border); border-radius:9999px; padding:7px 28px 7px 10px; cursor:pointer; }
 .topbar-controls { display:flex; align-items:center; gap:12px; }
 
 .scroll-body { scroll-behavior:smooth; }
@@ -141,6 +148,7 @@ body { background:var(--app-bg); font-family:var(--font-sans); color:var(--app-t
 
 .yoy-panel { background:var(--app-panel); border:1px solid var(--app-border); border-radius:20px; overflow:hidden; box-shadow:var(--app-shadow); }
 .yoy-head { background:var(--stori-teal); color:#fff; font:800 15px/1 var(--font-sans); padding:14px 16px; text-align:center; }
+.yoy-sub { background:var(--app-surface); color:var(--app-text-soft); border-bottom:1px solid var(--app-border); font:700 11px/1.2 var(--font-sans); letter-spacing:.02em; padding:9px 12px; text-align:center; }
 .yoy-list { padding:6px 14px 12px; }
 .yoy-row { display:flex; align-items:center; gap:8px; padding:11px 2px; border-bottom:1px solid var(--app-border-2); }
 .yoy-row:last-child { border-bottom:0; }
@@ -186,6 +194,17 @@ body { background:var(--app-bg); font-family:var(--font-sans); color:var(--app-t
 .bool-chip { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px; border-radius:9999px; }
 .bool-chip.ok { background:var(--stori-green); }
 .bool-chip.no { background:#E5484D; }
+.product-stack { display:flex; flex-direction:column; gap:22px; }
+.product-card { padding:18px 18px 10px; }
+.product-card-head { display:inline-block; background:var(--stori-teal); color:#fff; font:800 18px/1 var(--font-sans); padding:12px 22px; border-radius:12px; margin:0 0 16px; }
+.product-matrix-table { min-width:980px; }
+.product-matrix-table.compact { min-width:1260px; }
+.product-matrix-table th, .product-matrix-table td { font-size:13px; padding:10px 10px; }
+.product-matrix-table.compact th, .product-matrix-table.compact td { font-size:12px; padding:8px 8px; }
+.product-matrix-table .rowhead-plain { min-width:150px; color:var(--app-text); font-weight:700; }
+.product-text { display:inline-block; max-width:130px; white-space:normal; line-height:1.25; color:var(--app-text); }
+.product-matrix-table.compact .product-text { max-width:118px; }
+.debt-table .fund-round { min-width:160px; }
 
 /* funding table */
 .funding-table { border:1px solid var(--app-border); }
@@ -233,6 +252,71 @@ body { background:var(--app-bg); font-family:var(--font-sans); color:var(--app-t
   .kpi-grid { grid-template-columns:repeat(2,1fr); }
 }
 
+@media (max-width:760px) {
+  body { overflow-x:hidden; }
+  .app { display:block; min-height:100vh; }
+  .content { width:100%; min-width:0; }
+
+  /* Phone navigation moves from a left rail to a compact bottom bar. */
+  .rail { position:fixed; left:0; right:0; bottom:0; top:auto; z-index:20; width:100%; height:64px;
+    flex-direction:row; align-items:center; padding:7px 8px calc(7px + env(safe-area-inset-bottom));
+    border-right:0; border-top:1px solid var(--app-border); box-shadow:0 -8px 24px rgba(0,32,38,.08);
+    overflow-x:auto; overflow-y:hidden; }
+  .rail-nav { flex:1; flex-direction:row; justify-content:space-between; gap:4px; min-width:0; }
+  .rail-item { flex:1 1 0; min-width:42px; height:48px; padding:8px 4px; border-radius:14px; justify-content:center; }
+  .rail-item svg { width:19px; height:19px; }
+  .rail-logo, .rail-tag, .rail-foot, .rail-item span { display:none !important; }
+
+  .topbar { position:sticky; top:0; width:100%; min-width:0; padding:12px 14px; flex-direction:column; align-items:stretch; gap:10px; }
+  .topbar-title { width:100%; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; }
+  .topbar-controls { width:100%; justify-content:flex-start; flex-wrap:wrap; gap:8px; }
+  .period-select { width:100%; }
+  .period-select select { width:100%; min-width:0; }
+  .export-btn { display:none; }
+
+  .page { width:100%; max-width:none; padding:22px 14px calc(96px + env(safe-area-inset-bottom)); }
+  .view-continuous .section + .section { margin-top:34px; }
+  .section-head { margin-bottom:16px; }
+  .section-head h2 { font-size:22px; margin:0; }
+  .section-sub { font-size:14.5px; }
+
+  .kpi-grid { grid-template-columns:1fr; gap:14px; }
+  .kpi-card { border-radius:16px; padding:18px 18px 16px; }
+  .kpi-value { font-size:40px; }
+  .kpi-bar-row { grid-template-columns:minmax(54px,72px) 1fr minmax(48px,60px); }
+  .callout { margin-top:16px; padding:16px; }
+
+  .chart-toolbar { align-items:stretch; gap:10px; }
+  .ct-right { width:100%; overflow-x:auto; gap:8px; padding-bottom:2px; -webkit-overflow-scrolling:touch; }
+  .mrange { width:100%; overflow-x:auto; }
+  .mrange select { min-width:112px; }
+  .peer-chips { flex-wrap:nowrap; overflow-x:auto; padding-bottom:4px; -webkit-overflow-scrolling:touch; }
+  .pchip { flex:0 0 auto; }
+  .chart-row { min-width:0; }
+  .chart-row > * { min-width:0; }
+  .chart-card { min-width:0; max-width:100%; border-radius:16px; padding:16px 12px 8px; }
+  .chart-card > div[style] { max-width:100%; overflow:hidden; }
+  .chart-card .peer-chips { width:100%; justify-content:flex-start; }
+  .chart-title-pill, .product-card-head { font-size:15px; padding:10px 14px; max-width:100%; }
+  .yoy-panel { border-radius:16px; }
+  .cap-card { padding:16px 12px; }
+  .cap-legend { flex-wrap:wrap; gap:10px 14px; }
+  .illus-tag { margin-left:0; }
+
+  .card { border-radius:16px; }
+  .product-stack { gap:16px; }
+  .product-card { padding:14px 12px 8px; }
+  .tbl-wrap { margin:0 -12px; padding:0 12px 8px; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; }
+  .ci-table th, .ci-table td { padding:10px 9px; font-size:13px; }
+}
+
+@media (max-width:380px) {
+  .page { padding-left:12px; padding-right:12px; }
+  .topbar { padding-left:12px; padding-right:12px; }
+  .kpi-value { font-size:36px; }
+  .kpi-card { padding-left:16px; padding-right:16px; }
+}
+
 /* ===================== PRINT / PDF EXPORT ===================== */
 @media print {
   @page { size:landscape; margin:14mm; }
@@ -256,11 +340,11 @@ body { background:var(--app-bg); font-family:var(--font-sans); color:var(--app-t
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
-<script src="data.js"></script>
-<script src="generated/data_generated.js"></script>
-<script src="generated/live_override.js"></script>
-<script type="text/babel" src="charts.jsx"></script>
-<script type="text/babel" src="tables.jsx"></script>
-<script type="text/babel" src="app.jsx"></script>
+<script src="data.js?v=20260625g"></script>
+<script src="generated/data_generated.js?v=20260625g"></script>
+<script src="generated/live_override.js?v=20260625g"></script>
+<script type="text/babel" src="charts.jsx?v=20260625g"></script>
+<script type="text/babel" src="tables.jsx?v=20260625g"></script>
+<script type="text/babel" src="app.jsx?v=20260625g"></script>
 </body>
 </html>
